@@ -15,7 +15,7 @@ const (
 
 // Client represents a SimpleResty client. It embeds the resty.client so users have access to its methods.
 type Client struct {
-	resty.Client
+	*resty.Client
 
 	// baseURL for the API endpoint. Please include a trailing slash '/'.
 	baseURL string
@@ -116,7 +116,7 @@ func (c *Client) RequestURL(template string, args ...interface{}) string {
 // This function operates nearly the same as RequestURL
 func (c *Client) RequestURLWithQueryParams(url string, opts ...interface{}) (string, error) {
 	u := c.RequestURL(url)
-	return AddQueryParams(u, opts)
+	return AddQueryParams(u, opts...)
 }
 
 // SetBaseURL sets the base url for the client.
