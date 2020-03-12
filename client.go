@@ -116,7 +116,7 @@ func (c *Client) RequestURL(template string, args ...interface{}) string {
 // This function operates nearly the same as RequestURL
 func (c *Client) RequestURLWithQueryParams(url string, opts ...interface{}) (string, error) {
 	u := c.RequestURL(url)
-	return AddQueryParams(u, opts)
+	return AddQueryParams(u, opts...)
 }
 
 // SetBaseURL sets the base url for the client.
