@@ -12,6 +12,17 @@ type Client struct {
 	baseURL string
 }
 
+// Dispatch method is a wrapper around the send method which
+// performs the HTTP request using the method and URL already defined.
+func (c *Client) Dispatch(request *resty.Request) (*Response, error) {
+	response, err := request.Send()
+	if err != nil {
+		return nil, err
+	}
+
+	return checkResponse(response)
+}
+
 // Get executes a HTTP GET request.
 func (c *Client) Get(url string, r, body interface{}) (*Response, error) {
 	req := c.ConstructRequest(r, body)
