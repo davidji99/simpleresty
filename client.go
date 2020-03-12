@@ -15,7 +15,7 @@ const (
 
 // Client represents a SimpleResty client. It embeds the resty.client so users have access to its methods.
 type Client struct {
-	resty.Client
+	*resty.Client
 
 	// baseURL for the API endpoint. Please include a trailing slash '/'.
 	baseURL string
