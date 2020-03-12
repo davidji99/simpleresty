@@ -8,11 +8,11 @@ import (
 
 type FilterSortTestOpts struct {
 	Query string `url:"q,omitempty"`
-	Sort string `url:"sort,omitempty"`
+	Sort  string `url:"sort,omitempty"`
 }
 
 type ListTestOpts struct {
-	Page int64 `url:"page,omitempty"`
+	Page    int64 `url:"page,omitempty"`
 	Pagelen int64 `url:"pagelen,omitempty"`
 }
 
