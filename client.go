@@ -5,6 +5,15 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
+const (
+	GetMethod    = "GET"
+	PostMethod   = "POST"
+	PutMethod    = "PUT"
+	DeleteMethod = "DELETE"
+	PatchMethod  = "PATCH"
+)
+
+// Client represents a SimpleResty client. It embeds the resty.client so users have access to its methods.
 type Client struct {
 	resty.Client
 
