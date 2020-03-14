@@ -11,6 +11,7 @@ import (
 type Response struct {
 	RequestURL    string
 	RequestMethod string
+	RequestBody   interface{}
 	Status        string
 	StatusCode    int
 	Body          string
@@ -21,7 +22,7 @@ func checkResponse(resp *resty.Response) (*Response, error) {
 	path, _ := url.QueryUnescape(resp.Request.URL)
 	r := &Response{Status: resp.Status(), StatusCode: resp.StatusCode(),
 		Body: string(resp.Body()), RawHTTP: resp.RawResponse, RequestURL: path,
-		RequestMethod: resp.Request.Method}
+		RequestMethod: resp.Request.Method, RequestBody: resp.Request.Body}
 
 	// If response is any of the below, return early.
 	switch r.StatusCode {
