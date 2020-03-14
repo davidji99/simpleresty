@@ -30,3 +30,7 @@ fmt.Println(getErr)
 fmt.Println(response.StatusCode)
 fmt.Println(result.CurrentUserURL)
 ```
+
+## Go-Resty
+As this pkg is a thin wrapper around go-resty, all of its methods are available to use in this package.
+Please refer to [go-resty's documentation](https://github.com/go-resty/resty) for more information.
