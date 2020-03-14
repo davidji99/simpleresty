@@ -4,12 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-resty/resty/v2"
-	"net/http"
 	"net/url"
 )
 
 // Response represents the response after executing a HTTP request.
 type Response struct {
+	// Request representss the response's original request.
+	Request *resty.Request
+
 	// RequestURL is the request URL.
 	RequestURL string
 
@@ -19,6 +21,9 @@ type Response struct {
 	// Request body is the request body in JSON string format.
 	RequestBody string
 
+	// Resp represents the entire HTTP response.
+	Resp *resty.Response
+
 	// Status is the response status in string format such as '200 OK'.
 	Status string
 
@@ -27,16 +32,13 @@ type Response struct {
 
 	// Body is the response body in JSON String format.
 	Body string
-
-	// RawHTTP is the raw HTTP response from a request
-	RawHTTP *http.Response
 }
 
 func checkResponse(resp *resty.Response) (*Response, error) {
 	path, _ := url.QueryUnescape(resp.Request.URL)
 	r := &Response{Status: resp.Status(), StatusCode: resp.StatusCode(),
-		Body: string(resp.Body()), RawHTTP: resp.RawResponse, RequestURL: path,
-		RequestMethod: resp.Request.Method}
+		Body: string(resp.Body()), Resp: resp, RequestURL: path,
+		RequestMethod: resp.Request.Method, Request: resp.Request}
 
 	// Convert the request body to a string.
 	reqBody, marshallErr := json.Marshal(resp.Request.Body)
