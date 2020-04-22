@@ -23,7 +23,7 @@ type Client struct {
 
 // Dispatch method is a wrapper around the send method which
 // performs the HTTP request using the method and URL already defined.
-func (c *Client) Dispatch(request *resty.Request) (*Response, error) {
+func (c *Client) Dispatch(request *Request) (*Response, error) {
 	response, err := request.Send()
 	if err != nil {
 		return nil, err
@@ -93,7 +93,7 @@ func (c *Client) Delete(url string, r, body interface{}) (*Response, error) {
 }
 
 // ConstructRequest creates a new request.
-func (c *Client) ConstructRequest(r, body interface{}) *resty.Request {
+func (c *Client) ConstructRequest(r, body interface{}) *Request {
 	req := c.R().SetBody(body)
 
 	if r != nil {

@@ -56,3 +56,7 @@ Only a single value from one of the above four environment variables will be use
 ## Go-Resty
 As this pkg is a thin wrapper around go-resty, all of its methods are available to use in this package.
 Please refer to [go-resty's documentation](https://github.com/go-resty/resty) for more information.
+
+## Versioning
+As this library is completely reliant on `go-resty`, any major version bumps by `go-resty` will result in
+a major bump for this version. Otherwise, minor & patch version bumps for this library may differ from `go-resty`.
