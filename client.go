@@ -34,7 +34,7 @@ func (c *Client) Dispatch(request *Request) (*Response, error) {
 
 // Get executes a HTTP GET request.
 func (c *Client) Get(url string, r, body interface{}) (*Response, error) {
-	req := c.ConstructRequest(r, body)
+	req := c.constructRequest(r, body)
 
 	response, getErr := req.Get(url)
 	if getErr != nil {
@@ -46,7 +46,7 @@ func (c *Client) Get(url string, r, body interface{}) (*Response, error) {
 
 // Post executes a HTTP POST request.
 func (c *Client) Post(url string, r, body interface{}) (*Response, error) {
-	req := c.ConstructRequest(r, body)
+	req := c.constructRequest(r, body)
 
 	response, postErr := req.Post(url)
 	if postErr != nil {
@@ -58,7 +58,7 @@ func (c *Client) Post(url string, r, body interface{}) (*Response, error) {
 
 // Put executes a HTTP PUT request.
 func (c *Client) Put(url string, r, body interface{}) (*Response, error) {
-	req := c.ConstructRequest(r, body)
+	req := c.constructRequest(r, body)
 
 	response, putErr := req.Put(url)
 	if putErr != nil {
@@ -70,7 +70,7 @@ func (c *Client) Put(url string, r, body interface{}) (*Response, error) {
 
 // Patch executes a HTTP PATCH request.
 func (c *Client) Patch(url string, r, body interface{}) (*Response, error) {
-	req := c.ConstructRequest(r, body)
+	req := c.constructRequest(r, body)
 
 	response, patchErr := req.Patch(url)
 	if patchErr != nil {
@@ -82,7 +82,7 @@ func (c *Client) Patch(url string, r, body interface{}) (*Response, error) {
 
 // Delete executes a HTTP DELETE request.
 func (c *Client) Delete(url string, r, body interface{}) (*Response, error) {
-	req := c.ConstructRequest(r, body)
+	req := c.constructRequest(r, body)
 
 	response, deleteErr := req.Delete(url)
 	if deleteErr != nil {
@@ -92,9 +92,10 @@ func (c *Client) Delete(url string, r, body interface{}) (*Response, error) {
 	return checkResponse(response)
 }
 
-// ConstructRequest creates a new request.
-func (c *Client) ConstructRequest(r, body interface{}) *Request {
-	req := c.R().SetBody(body)
+// constructRequest creates a new request.
+func (c *Client) constructRequest(r, body interface{}) *Request {
+	req := c.NewRequest()
+	req.SetBody(body)
 
 	if r != nil {
 		req.SetResult(r)
