@@ -9,7 +9,7 @@ import (
 
 // Response represents the response after executing a HTTP request.
 type Response struct {
-	// Request representss the response's original request.
+	// Request represents the response's original request.
 	Request *resty.Request
 
 	// RequestURL is the request URL.

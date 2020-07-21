@@ -10,8 +10,8 @@ var (
 )
 
 // New function creates a new SimpleResty client.
-func New() *Client {
-	c := &Client{Client: resty.New()}
+func New() *HttpClient {
+	c := &HttpClient{Client: resty.New()}
 
 	determineSetProxy(c)
 
@@ -20,7 +20,7 @@ func New() *Client {
 
 // determineSetProxy checks if any proxy variables are defined in the environment.
 // If so, set the first occurrence and exit the loop.
-func determineSetProxy(c *Client) {
+func determineSetProxy(c *HttpClient) {
 	for _, v := range proxyVars {
 		proxyUrl := os.Getenv(v)
 		if proxyUrl != "" {

@@ -22,8 +22,8 @@ func OAuth(clientID, clientSecret string, endpoint oauth2.Endpoint) (*oauth2.Tok
 
 	// Use the authorization code that is pushed to the redirect
 	// URL. Exchange will do the handshake to retrieve the
-	// initial access token. The HTTP Client returned by
-	// conf.Client will refresh the token as necessary.
+	// initial access token. The HTTP HttpClient returned by
+	// conf.HttpClient will refresh the token as necessary.
 	var code string
 	fmt.Printf("Enter the code in the return URL: ")
 	if _, err := fmt.Scan(&code); err != nil {

@@ -13,17 +13,26 @@ const (
 	PatchMethod  = "PATCH"
 )
 
-// Client represents a SimpleResty client. It embeds the resty.client so users have access to its methods.
-type Client struct {
+// HttpClient represents a SimpleResty client. It embeds the resty.client so users have access to its methods.
+type HttpClient struct {
 	*resty.Client
 
 	// baseURL for the API endpoint. Please include a trailing slash '/'.
 	baseURL string
+
+	// userAgent used when communicating with an API.
+	userAgent string
+
+	// Custom HTTPHeaders
+	customHTTPHeaders map[string]string
+
+	// basicAuth represents the base64 encoded string for authentication
+	basicAuth *string
 }
 
 // Dispatch method is a wrapper around the send method which
 // performs the HTTP request using the method and URL already defined.
-func (c *Client) Dispatch(request *Request) (*Response, error) {
+func (c *HttpClient) Dispatch(request *Request) (*Response, error) {
 	response, err := request.Send()
 	if err != nil {
 		return nil, err
@@ -33,7 +42,7 @@ func (c *Client) Dispatch(request *Request) (*Response, error) {
 }
 
 // Get executes a HTTP GET request.
-func (c *Client) Get(url string, r, body interface{}) (*Response, error) {
+func (c *HttpClient) Get(url string, r, body interface{}) (*Response, error) {
 	req := c.constructRequest(r, body)
 
 	response, getErr := req.Get(url)
@@ -45,7 +54,7 @@ func (c *Client) Get(url string, r, body interface{}) (*Response, error) {
 }
 
 // Post executes a HTTP POST request.
-func (c *Client) Post(url string, r, body interface{}) (*Response, error) {
+func (c *HttpClient) Post(url string, r, body interface{}) (*Response, error) {
 	req := c.constructRequest(r, body)
 
 	response, postErr := req.Post(url)
@@ -57,7 +66,7 @@ func (c *Client) Post(url string, r, body interface{}) (*Response, error) {
 }
 
 // Put executes a HTTP PUT request.
-func (c *Client) Put(url string, r, body interface{}) (*Response, error) {
+func (c *HttpClient) Put(url string, r, body interface{}) (*Response, error) {
 	req := c.constructRequest(r, body)
 
 	response, putErr := req.Put(url)
@@ -69,7 +78,7 @@ func (c *Client) Put(url string, r, body interface{}) (*Response, error) {
 }
 
 // Patch executes a HTTP PATCH request.
-func (c *Client) Patch(url string, r, body interface{}) (*Response, error) {
+func (c *HttpClient) Patch(url string, r, body interface{}) (*Response, error) {
 	req := c.constructRequest(r, body)
 
 	response, patchErr := req.Patch(url)
@@ -81,7 +90,7 @@ func (c *Client) Patch(url string, r, body interface{}) (*Response, error) {
 }
 
 // Delete executes a HTTP DELETE request.
-func (c *Client) Delete(url string, r, body interface{}) (*Response, error) {
+func (c *HttpClient) Delete(url string, r, body interface{}) (*Response, error) {
 	req := c.constructRequest(r, body)
 
 	response, deleteErr := req.Delete(url)
@@ -93,7 +102,7 @@ func (c *Client) Delete(url string, r, body interface{}) (*Response, error) {
 }
 
 // constructRequest creates a new request.
-func (c *Client) constructRequest(r, body interface{}) *Request {
+func (c *HttpClient) constructRequest(r, body interface{}) *Request {
 	req := c.NewRequest()
 	req.SetBody(body)
 
@@ -105,7 +114,7 @@ func (c *Client) constructRequest(r, body interface{}) *Request {
 }
 
 // RequestURL appends the template argument to the base URL and returns the full request URL.
-func (c *Client) RequestURL(template string, args ...interface{}) string {
+func (c *HttpClient) RequestURL(template string, args ...interface{}) string {
 	if len(args) == 1 && args[0] == "" {
 		return c.baseURL + template
 	}
@@ -115,12 +124,12 @@ func (c *Client) RequestURL(template string, args ...interface{}) string {
 // RequestURLWithQueryParams first constructs the request URL and then appends any URL encoded query parameters.
 //
 // This function operates nearly the same as RequestURL
-func (c *Client) RequestURLWithQueryParams(url string, opts ...interface{}) (string, error) {
+func (c *HttpClient) RequestURLWithQueryParams(url string, opts ...interface{}) (string, error) {
 	u := c.RequestURL(url)
 	return AddQueryParams(u, opts...)
 }
 
 // SetBaseURL sets the base url for the client.
-func (c *Client) SetBaseURL(url string) {
+func (c *HttpClient) SetBaseURL(url string) {
 	c.baseURL = url
 }

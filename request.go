@@ -9,6 +9,6 @@ type Request struct {
 	*resty.Request
 }
 
-func (c *Client) NewRequest() *Request {
+func (c *HttpClient) NewRequest() *Request {
 	return &Request{Request: c.R()}
 }
