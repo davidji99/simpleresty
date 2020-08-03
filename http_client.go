@@ -13,7 +13,7 @@ const (
 	PatchMethod  = "PATCH"
 )
 
-// HttpClient represents a SimpleResty client. It embeds the resty.client so users have access to its methods.
+// HttpClient represents a simpleresty client. It embeds the resty.client so users have access to its methods & functions.
 type HttpClient struct {
 	*resty.Client
 
