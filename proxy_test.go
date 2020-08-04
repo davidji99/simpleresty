@@ -10,21 +10,21 @@ func TestParseProxyForServer_Creds(t *testing.T) {
 	testURL := "http://BOB.BUILDER:ACOMPLICATEDPASSWORD@company.com:8080"
 	expected := "company.com"
 
-	assert.Equal(t, expected, parseProxyForServer(testURL))
+	assert.Equal(t, expected, parseProxyURLForDomain(testURL))
 }
 
 func TestParseProxyForServer_NoCreds(t *testing.T) {
 	testURL := "http://company.com:8080"
 	expected := "company.com"
 
-	assert.Equal(t, expected, parseProxyForServer(testURL))
+	assert.Equal(t, expected, parseProxyURLForDomain(testURL))
 }
 
 func TestParseProxyForServer_NoCredsHTTPS(t *testing.T) {
 	testURL := "https://company.com:8080"
 	expected := "company.com"
 
-	assert.Equal(t, expected, parseProxyForServer(testURL))
+	assert.Equal(t, expected, parseProxyURLForDomain(testURL))
 }
 
 func TestGetNoProxyDomains_NoneSet(t *testing.T) {

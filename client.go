@@ -146,6 +146,10 @@ func (c *Client) SetBaseURL(url string) {
 	c.baseURL = url
 }
 
+// determineSetProxy first checks if proxy is already set or not. If it is, this method returns early.
+//
+// If no proxy is set, it will be set if the proxyURL is defined and the base domain is not present
+// in the noProxyDomains string array.
 func (c *Client) determineSetProxy() {
 	// If proxy is already set in a previous execution, short circuit this method call.
 	if c.IsProxySet() {

@@ -11,28 +11,29 @@ var (
 	noProxyVars = []string{"NO_PROXY", "no_proxy"}
 )
 
-func parseProxyForServer(proxyURL string) string {
-	var serverRaw string
+// parseProxyURLForDomain parses a proxy URL <protocol><server>:<port> and returns just the domain.
+func parseProxyURLForDomain(proxyURL string) string {
+	var domainRaw string
 
 	// Split proxyURL by '@' to account for username/password in the URL
 	proxyURLSplitted := strings.Split(proxyURL, "@")
 
 	if len(proxyURLSplitted) == 1 {
 		// If no username/password in URL, return proxyURLSplitted's zero index
-		serverRaw = strings.ToLower(proxyURLSplitted[0])
+		domainRaw = strings.ToLower(proxyURLSplitted[0])
 	} else {
 		// Take the 1st index value
-		serverRaw = proxyURLSplitted[1]
+		domainRaw = proxyURLSplitted[1]
 	}
 
 	// Strip out the protocol
 	regex := regexp.MustCompile(`http[s]?://`)
-	serverRaw = regex.ReplaceAllString(serverRaw, "")
+	domainRaw = regex.ReplaceAllString(domainRaw, "")
 
 	// Split by colon to separate server from PORT and get the zero index
-	server := strings.Split(serverRaw, ":")[0]
+	domain := strings.Split(domainRaw, ":")[0]
 
-	return strings.ToLower(server)
+	return strings.ToLower(domain)
 }
 
 // getNoProxyDomains fetches no proxy variables from the environment and parses each variable value for domains.
@@ -76,6 +77,11 @@ func getNoProxyDomains() ([]string, bool) {
 	return noProxyDomains, len(noProxyDomains) > 0
 }
 
+// getProxyURL gets any proxy urls from one of the four environment variables:
+// - HTTPS_PROXY
+// - https_proxy
+// - HTTP_PROXY
+// - http_proxy
 func getProxyURL() *string {
 	for _, v := range proxyVars {
 		proxyURL, isVarSet := os.LookupEnv(v)
