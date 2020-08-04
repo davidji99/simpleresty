@@ -3,6 +3,7 @@ package simpleresty
 import (
 	"fmt"
 	"github.com/go-resty/resty/v2"
+	"os"
 )
 
 const (
@@ -105,6 +106,11 @@ func (c *Client) ConstructRequest(r, body interface{}) *resty.Request {
 
 // RequestURL appends the template argument to the base URL and returns the full request URL.
 func (c *Client) RequestURL(template string, args ...interface{}) string {
+	// Validate to make sure baseURL is set
+	if c.baseURL == "" {
+		panic("base URL not set")
+	}
+
 	if len(args) == 1 && args[0] == "" {
 		return c.baseURL + template
 	}
@@ -122,4 +128,16 @@ func (c *Client) RequestURLWithQueryParams(url string, opts ...interface{}) (str
 // SetBaseURL sets the base url for the client.
 func (c *Client) SetBaseURL(url string) {
 	c.baseURL = url
+}
+
+func (c *Client) determineSetProxy() {
+	noProxyDomains, _ := getNoProxyDomains()
+
+	for _, v := range proxyVars {
+		proxyURL := os.Getenv(v)
+		if proxyURL != "" && !contains(noProxyDomains, proxyURL, true) {
+			c.SetProxy(proxyURL)
+			break
+		}
+	}
 }
