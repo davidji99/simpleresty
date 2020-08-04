@@ -5,21 +5,22 @@ import (
 )
 
 // New function creates a new simpleresty client with base url set to empty string.
+//
+// Users can set the base string later in their code.
 func New() *Client {
-	c := &Client{Client: resty.New(), baseURL: ""}
-
-	// Set proxy if applicable
-	c.determineSetProxy()
-
+	c := NewWithBaseURL("")
 	return c
 }
 
 // NewWithBaseURL creates a new simpleresty client with base url set.
 func NewWithBaseURL(url string) *Client {
-	c := &Client{Client: resty.New(), baseURL: url}
+	c := &Client{Client: resty.New(), baseURL: url, proxyURL: nil, shouldSetProxy: false}
 
-	// Set proxy if applicable
-	c.determineSetProxy()
+	// Set no proxy domains if any
+	c.noProxyDomains, _ = getNoProxyDomains()
+
+	// Set proxy URL if any
+	c.proxyURL = getProxyURL()
 
 	return c
 }

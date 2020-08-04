@@ -3,7 +3,7 @@ package simpleresty
 import (
 	"fmt"
 	"github.com/go-resty/resty/v2"
-	"os"
+	"strings"
 )
 
 const (
@@ -20,12 +20,25 @@ type Client struct {
 
 	// baseURL for the API endpoint. Please include a trailing slash '/'.
 	baseURL string
+
+	// noProxyDomains contains a list of domains that don't require a proxy.
+	noProxyDomains []string
+
+	// proxyURL represents a proxy URL.
+	proxyURL *string
+
+	// shouldSetProxy stores a boolean value that determines if a proxy needs to be used.
+	shouldSetProxy bool
 }
 
 // Dispatch method is a wrapper around the send method which
 // performs the HTTP request using the method and URL already defined.
 func (c *Client) Dispatch(request *resty.Request) (*Response, error) {
+	// Set Proxy if applicable
+	c.determineSetProxy()
+
 	response, err := request.Send()
+
 	if err != nil {
 		return nil, err
 	}
@@ -95,6 +108,9 @@ func (c *Client) Delete(url string, r, body interface{}) (*Response, error) {
 
 // ConstructRequest creates a new request.
 func (c *Client) ConstructRequest(r, body interface{}) *resty.Request {
+	// Set Proxy if applicable
+	c.determineSetProxy()
+
 	req := c.R().SetBody(body)
 
 	if r != nil {
@@ -131,13 +147,24 @@ func (c *Client) SetBaseURL(url string) {
 }
 
 func (c *Client) determineSetProxy() {
-	noProxyDomains, _ := getNoProxyDomains()
+	// If proxy is already set in a previous execution, short circuit this method call.
+	if c.IsProxySet() {
+		return
+	}
 
-	for _, v := range proxyVars {
-		proxyURL := os.Getenv(v)
-		if proxyURL != "" && !contains(noProxyDomains, proxyURL, true) {
-			c.SetProxy(proxyURL)
-			break
+	if c.proxyURL != nil {
+		c.shouldSetProxy = true
+
+		// Loop through noProxyDomains and check if the base url doesn't need a proxy set for the Client.
+		for _, d := range c.noProxyDomains {
+			if strings.Contains(strings.ToLower(c.baseURL), d) {
+				c.shouldSetProxy = false
+				break
+			}
+		}
+
+		if c.shouldSetProxy {
+			c.SetProxy(*c.proxyURL)
 		}
 	}
 }

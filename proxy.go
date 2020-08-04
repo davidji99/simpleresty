@@ -75,3 +75,19 @@ func getNoProxyDomains() ([]string, bool) {
 
 	return noProxyDomains, len(noProxyDomains) > 0
 }
+
+func getProxyURL() *string {
+	for _, v := range proxyVars {
+		proxyURL, isVarSet := os.LookupEnv(v)
+		if !isVarSet {
+			continue
+		}
+
+		if proxyURL != "" {
+			url := strings.TrimSpace(proxyURL)
+			return &url
+		}
+	}
+
+	return nil
+}
