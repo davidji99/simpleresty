@@ -53,3 +53,24 @@ func TestAddQueryParams_MultipleOpts(t *testing.T) {
 	assert.Nil(t, addOptErr)
 	assert.Equal(t, "/repositories/bOrg/bRepo?page=2&pagelen=5&q=source.repository.full_name+%21%3D+%22main%2Frepo%22+AND+state+%3D+%22OPEN%22&sort=updated_on", urlStr)
 }
+
+type StringSliceTestOpts struct {
+	Tags []string `url:"tag,omitempty"`
+}
+
+func TestStringSliceOpts(t *testing.T) {
+	opt1 := &StringSliceTestOpts{
+		Tags: []string{"hello", "bye"},
+	}
+
+	opt2 := &FilterSortTestOpts{
+		Query: "source.repository.full_name != \"main/repo\" AND state = \"OPEN\"",
+		Sort:  "updated_on",
+	}
+
+	urlStr := fmt.Sprintf("/repositories/%s/%s", "bOrg", "bRepo")
+	urlStr, addOptErr := AddQueryParams(urlStr, opt1, opt2)
+
+	assert.Nil(t, addOptErr)
+	assert.Equal(t, "/repositories/bOrg/bRepo?q=source.repository.full_name+%21%3D+%22main%2Frepo%22+AND+state+%3D+%22OPEN%22&sort=updated_on&tag=hello&tag=bye", urlStr)
+}
